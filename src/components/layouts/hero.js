@@ -1,27 +1,41 @@
+import { useState,useEffect } from "react";
+import api from "../../services/api";
+import url from "../../services/url";
+import { NavLink } from "react-router-dom";
 function Hero(){
+    const [categories,setCategories] = useState([]);
+    const [show, setShow] = useState(false);
+    const loadCategories = async () => {
+        try {
+          const rs = await api.get(url.CATEGORY.LIST); 
+          setCategories(rs.data);
+        } catch (error) {
+
+      }
+      }
+    useEffect(() => {
+        loadCategories(); 
+      }, []);
     return(
         <section className="hero hero-normal">
         <div className="container">
             <div className="row">
                 <div className="col-lg-3">
                     <div className="hero__categories">
-                        <div className="hero__categories__all">
+                        <div className="hero__categories__all" onClick={()=>setShow(!show)}>
                             <i className="fa fa-bars"></i>
                             <span>All departments</span>
                         </div>
-                        <ul>
-                            <li><a href="#">Fresh Meat</a></li>
-                            <li><a href="#">Vegetables</a></li>
-                            <li><a href="#">Fruit & Nut Gifts</a></li>
-                            <li><a href="#">Fresh Berries</a></li>
-                            <li><a href="#">Ocean Foods</a></li>
-                            <li><a href="#">Butter & Eggs</a></li>
-                            <li><a href="#">Fastfood</a></li>
-                            <li><a href="#">Fresh Onion</a></li>
-                            <li><a href="#">Papayaya & Crisps</a></li>
-                            <li><a href="#">Oatmeal</a></li>
-                            <li><a href="#">Fresh Bananas</a></li>
-                        </ul>
+                        <ul style={{display:show?"block":"none"}}>
+                          {
+                            categories.map((e,i)=>{
+                              return (
+                                 <li key={i}>
+                                   <NavLink to={`/category/${e.id}`}>{e.name}</NavLink>
+                                </li>)
+                            })
+                         }
+                         </ul>
                     </div>
                 </div>
                 <div className="col-lg-9">

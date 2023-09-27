@@ -1,20 +1,20 @@
 import { useState,useEffect } from "react";
+import api from "../../services/api";
+import url from "../../services/url";
+import { NavLink } from "react-router-dom";
 function Sidebar(){
     const [categories,setCategories] = useState([]);
-    const [count,setCount] = useState(0);
-    useEffect(()=>{
-        console.log("A");
-    },[categories]);
-    useEffect(()=>{
-        console.log("B");
-    },[count]);
-    useEffect(()=>{
-        fetch("https://localhost:7168/api/category")
-        .then(data=>data.json())
-        .then(data=>{
-            setCategories(data);
-        })
-    },[]);
+    const loadCategories = async () => {
+        try {
+          const rs = await api.get(url.CATEGORY.LIST); 
+          setCategories(rs.data);
+        } catch (error) {
+
+      }
+      }
+    useEffect(() => {
+        loadCategories(); 
+      }, []);
     return(
         <div className="sidebar">
         <div className="sidebar__item">
@@ -22,7 +22,10 @@ function Sidebar(){
             <ul>
                 {
                     categories.map((e,i)=>{
-                        return (<li key={i}><a href="#">{e.name}</a></li>)
+                        return (
+                        <li key={i}>
+                            <NavLink to={`/category/${e.id}`}>{e.name}</NavLink>
+                        </li>)
                     })
                 }
             </ul>
